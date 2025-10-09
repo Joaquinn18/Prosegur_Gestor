@@ -104,6 +104,18 @@ public class InMemoryDatabase {
 	        return null;
 	    }
 
+	    public static synchronized int getTotalEntregadoPorDni(String dni) {
+	        if (dni == null) return 0;
+	        int sum = 0;
+	        for (Modelado.Entrega e : ENTREGAS) {
+	            // Ajusta el getter si tu Entrega tiene distinto nombre (ver nota abajo)
+	            if (e.getDniMotorizado() != null && e.getDniMotorizado().trim().equals(dni.trim())) {
+	                sum += e.getCantidad();
+	            }
+	        }
+	        return sum;
+	    }
+
 }
 
 

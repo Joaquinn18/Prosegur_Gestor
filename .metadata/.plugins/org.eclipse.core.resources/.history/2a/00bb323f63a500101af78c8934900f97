@@ -1,0 +1,34 @@
+package Modelado;
+
+import java.util.List;
+
+public class Entrega {
+	private int id;
+    private String dniMotorizado;
+    private int cantidad;
+    private String fecha;
+    private int requestedCantidad;
+    private List<DetalleEntrega> detalles;
+    
+    public Entrega(int id, String dniMotorizado, int cantidad, int requestedCantidad, String fecha, List<DetalleEntrega> detalles) {
+        this.id = id;
+        this.dniMotorizado = dniMotorizado;
+        this.cantidad = cantidad;
+        this.requestedCantidad = requestedCantidad;
+        this.fecha = fecha;
+        this.detalles = detalles;
+    }
+
+    // getters / setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public String getDniMotorizado() { return dniMotorizado; }
+    public void setDniMotorizado(String dniMotorizado) { this.dniMotorizado = dniMotorizado; }
+
+    public int getCantidad() { return cantidad; }
+    public void setCantidad(int cantidad) { this.cantidad = cantidad; }
+
+    public String getFecha() { return fecha; }
+    public void setFecha(String fecha) { this.fecha = fecha; }
+}

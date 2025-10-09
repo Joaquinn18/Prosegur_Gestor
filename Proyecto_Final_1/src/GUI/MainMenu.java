@@ -9,12 +9,13 @@ public class MainMenu extends JFrame implements ActionListener {
 	private JButton btnRegistroMotorizado;
     private ControladorMotorizado controlador;
     private JButton btnRegistrarEntregas;
+    private JButton btnReporteEntregas;
 
     public MainMenu() {
         controlador = new ControladorMotorizado();
 
         setTitle("Menú Principal - Sistema");
-        setSize(300, 200);
+        setSize(393, 273);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -22,20 +23,29 @@ public class MainMenu extends JFrame implements ActionListener {
         panel.setLayout(null);
 
         btnRegistroMotorizado = new JButton("Registrar Motorizado");
-        btnRegistroMotorizado.setBounds(73, 29, 143, 25);
+        btnRegistroMotorizado.setBounds(85, 29, 201, 25);
         panel.add(btnRegistroMotorizado);
 
         getContentPane().add(panel);
         
         JButton btnListadoMotorizados = new JButton("Listado de Motorizados");
-        btnListadoMotorizados.setBounds(73, 65, 143, 25);
+        btnListadoMotorizados.setBounds(85, 65, 201, 25);
         panel.add(btnListadoMotorizados);
         
         btnRegistrarEntregas = new JButton("Registrar Entregas");
         btnRegistrarEntregas.addActionListener(this);
-        btnRegistrarEntregas.setBounds(73, 101, 143, 25);
+        btnRegistrarEntregas.setBounds(87, 101, 199, 25);
         panel.add(btnRegistrarEntregas);
 
+        btnReporteEntregas = new JButton("Reporte Entregas");
+        btnReporteEntregas.setBounds(85, 137, 201, 25); // ajusta Y si tienes otros botones
+        panel.add(btnReporteEntregas);
+
+        btnReporteEntregas.addActionListener(e -> {
+            ReporteEntregasFrame reporte = new ReporteEntregasFrame(controlador != null ? controlador : new ControladorMotorizado());
+            reporte.setVisible(true);
+        });
+        
         btnListadoMotorizados.addActionListener(e -> {
             ListadoMotorizadoFrame listadoFrame = new ListadoMotorizadoFrame(controlador);
             listadoFrame.setVisible(true);
@@ -52,30 +62,31 @@ public class MainMenu extends JFrame implements ActionListener {
 		}
 	}
 	protected void do_btnRegistrarEntregas_actionPerformed(ActionEvent e) {
-		 // 1) Intentamos pedir DNI directamente al usuario (MainMenu no tiene tabla seleccionada)
+		
 	    String dniSeleccionado = JOptionPane.showInputDialog(this, "Ingrese DNI del motorizado para registrar entrega:");
 	    if (dniSeleccionado == null) return; // usuario canceló
 	    dniSeleccionado = dniSeleccionado.trim();
 
-	    // 2) Validación de formato: exactamente 8 dígitos
+	    
 	    if (!dniSeleccionado.matches("\\d{8}")) {
 	        JOptionPane.showMessageDialog(this, "DNI inválido: debe contener exactamente 8 dígitos.");
 	        return;
 	    }
 
-	    // 3) Abrir la GUI de entregas con prefill de DNI
+	   
 	    Entrega ef = new Entrega(this.controlador != null ? this.controlador : new ControladorMotorizado(), dniSeleccionado);
 	    ef.setVisible(true);
 
-	    // 4) Opcional: refrescar listados si hace falta (ver nota abajo)
+	 
 	    ef.addWindowListener(new java.awt.event.WindowAdapter() {
 	        @Override
 	        public void windowClosed(java.awt.event.WindowEvent e) {
-	            // No podemos refrescar la tabla desde acá porque MainMenu no tiene la tabla.
-	            // Si deseas refrescar un Listado abierto, ver la sección "Actualizar listado abierto" abajo.
+	
 	        }
 	    });
 		
 		
 	}
+	
+	
     }

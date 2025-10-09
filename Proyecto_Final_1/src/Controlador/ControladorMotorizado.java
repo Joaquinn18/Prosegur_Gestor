@@ -3,6 +3,14 @@ import repositorio.InMemoryDatabase;
 import Modelado.Motorizado;
 import javax.swing.JOptionPane;
 import java.util.List;
+import java.util.ArrayList;
+import Modelado.ReporteEntrega;
+import Modelado.Motorizado;
+import repositorio.InMemoryDatabase;
+import Modelado.Entrega;
+import Modelado.DetalleEntrega;
+import Controlador.CartasInsuficientes;
+import Controlador.MotorizadoNoEncontrado;
 
 public class ControladorMotorizado {
 	
@@ -90,9 +98,72 @@ public class ControladorMotorizado {
 
 	      
 	      m.setTarjetasAsignadas(disponibles - cantidad);
-
+	      
 	    
 	  }
+	 
+	 public List<ReporteEntrega> generarReporteEntregas() {
+		    List<ReporteEntrega> reporte = new ArrayList<>();
+		    List<Motorizado> lista = InMemoryDatabase.getMotorizados(); // copia de motorizados
 
+		    for (Motorizado m : lista) {
+		        String dni = m.getDni();
+		        int entregado = InMemoryDatabase.getTotalEntregadoPorDni(dni); // suma en ENTREGAS
+		        int restante = m.getTarjetasAsignadas(); // campo actualizado al registrar entregas
+		        int inicial = entregado + restante; // reconstruimos el total inicial asignado
+		        double porcentaje = (inicial == 0) ? 0.0 : (entregado * 100.0 / inicial);
+
+		        ReporteEntrega r = new ReporteEntrega(
+		                dni,
+		                (m.getNombres() == null ? "" : m.getNombres() + " " + (m.getApellidos() == null ? "" : m.getApellidos())),
+		                inicial,
+		                entregado,
+		                restante,
+		                porcentaje
+		        );
+		        reporte.add(r);
+		    }
+		    return reporte;
+
+}
+	 public void registrarEntrega(String dni, int requestedCantidad, String fecha, List<DetalleEntrega> detalles)
+		        throws MotorizadoNoEncontrado, CartasInsuficientes {
+		    if (dni == null || dni.trim().isEmpty()) throw new MotorizadoNoEncontrado("DNI inválido.");
+		    Modelado.Motorizado m = InMemoryDatabase.findByDniObj(dni.trim());
+		    if (m == null) throw new MotorizadoNoEncontrado("No existe motorizado con DNI: " + dni);
+
+		    if (requestedCantidad <= 0) throw new IllegalArgumentException("La cantidad debe ser mayor que 0.");
+
+		    // calcular cuántos detalles están 'conforme'
+		    int aceptadas = 0;
+		    if (detalles != null) {
+		        for (DetalleEntrega d : detalles) {
+		            if (d != null && d.isConforme()) aceptadas++;
+		        }
+		    }
+
+		    if (aceptadas <= 0) {
+		        // No hay entregas válidas; lanzamos excepción o simplemente no registramos.
+		        throw new IllegalArgumentException("No hay entregas conformes para registrar.");
+		    }
+
+		    int disponibles = m.getTarjetasAsignadas();
+		    if (aceptadas > disponibles) {
+		        // si se intentan aceptar más de las tarjetas disponibles -> excepción personalizada
+		        throw new CartasInsuficientes("No hay suficientes tarjetas. Disponibles: " 
+		                                             + disponibles + ", conformes: " + aceptadas);
+		    }
+
+		    // crear Entrega con cantidad = aceptadas, requestedCantidad = requestedCantidad, y detalles
+		    Entrega e = new Entrega(0, dni.trim(), aceptadas, requestedCantidad, fecha, detalles);
+		    boolean added = InMemoryDatabase.addEntrega(e);
+		    if (!added) {
+		        throw new RuntimeException("No se pudo registrar la entrega (error interno).");
+		    }
+
+		    // actualizar motorizado: restar solo las aceptadas
+		    m.setTarjetasAsignadas(disponibles - aceptadas);
+		} 
+	 
 }
 
