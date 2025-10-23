@@ -15,8 +15,8 @@ public class Motorizado {
 	private String estado;
 	private String fechaIngreso;
 	private String contrato;
-	private int tarjetasAsignadas; // NUEVO: cantidad de tarjetas asignadas
-	private boolean diaRuta; // NUEVO: si marca el día de la ruta
+	private int tarjetasAsignadas;
+	private boolean diaRuta;
 	private int idSede;
 	private String fechaTarjetas;
 

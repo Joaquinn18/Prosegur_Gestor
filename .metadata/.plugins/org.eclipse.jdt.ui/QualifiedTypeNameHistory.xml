@@ -3,9 +3,10 @@
     <fullyQualifiedTypeName name="GUI.MainMenu"/>
     <fullyQualifiedTypeName name="GUI.EditarMotorizado"/>
     <fullyQualifiedTypeName name="Controlador.ControladorMotorizado"/>
-    <fullyQualifiedTypeName name="GUI.Entrega"/>
     <fullyQualifiedTypeName name="Controlador.MotorizadoNoEncontrado"/>
     <fullyQualifiedTypeName name="Controlador.CartasInsuficientes"/>
     <fullyQualifiedTypeName name="java.util.List"/>
     <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="Modelado.Entrega"/>
+    <fullyQualifiedTypeName name="GUI.Entrega"/>
 </qualifiedTypeNameHistroy>
