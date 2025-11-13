@@ -1,50 +1,128 @@
 package GUI;
-import javax.swing.*;  
-import java.awt.*;     
+import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import java.awt.*;
 
-public class LoginGUI extends JFrame { 
-	private static final long serialVersionUID = 1L;
-	 private JTextField txtUsuario;
-	    private JPasswordField txtPassword;
-	    private JButton btnLogin;
+public class LoginGUI extends JFrame {
+    private static final long serialVersionUID = 1L;
+    private static final Color PROSEGUR_YELLOW = new Color(255, 209, 0);
+    private static final Color PROSEGUR_BLACK = new Color(18, 18, 18);
 
-	    public LoginGUI() {
-	        setTitle("Login - Sistema de Mensajería");
-	        setSize(300, 200);
-	        setDefaultCloseOperation(EXIT_ON_CLOSE);
-	        setLocationRelativeTo(null);
+    private JTextField txtUsuario;
+    private JPasswordField txtPassword;
+    private JButton btnLogin;
 
-	        JPanel panel = new JPanel();
-	        panel.setLayout(null);
+    public LoginGUI() {
+        setTitle("Login - Sistema de Mensajería");
+        setSize(420, 420);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
 
-	        JLabel label = new JLabel("Usuario:");
-	        label.setFont(new Font("Times New Roman", Font.BOLD, 12));
-	        label.setBounds(10, 15, 139, 50);
-	        panel.add(label);
-	        txtUsuario = new JTextField();
-	        txtUsuario.setBounds(135, 23, 139, 34);
-	        panel.add(txtUsuario);
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBackground(PROSEGUR_BLACK);
+        setContentPane(contentPanel);
 
-	        JLabel label_1 = new JLabel("Contraseña:");
-	        label_1.setFont(new Font("Times New Roman", Font.BOLD, 12));
-	        label_1.setBounds(10, 55, 139, 50);
-	        panel.add(label_1);
-	        txtPassword = new JPasswordField();
-	        txtPassword.setBounds(135, 63, 139, 34);
-	        panel.add(txtPassword);
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(PROSEGUR_YELLOW);
+        headerPanel.setBorder(new EmptyBorder(20, 25, 15, 25));
 
-	        btnLogin = new JButton("Ingresar");
-	        btnLogin.setFont(new Font("Times New Roman", Font.BOLD, 14));
-	        btnLogin.setBounds(73, 116, 139, 34);
-	        panel.add(btnLogin);
+        JLabel lblTitulo = new JLabel("⚫ Bienvenido a Prosegur Riders", SwingConstants.LEFT);
+        lblTitulo.setFont(new Font("Montserrat", Font.BOLD, 20));
+        lblTitulo.setForeground(PROSEGUR_BLACK);
+        headerPanel.add(lblTitulo, BorderLayout.NORTH);
 
-	        getContentPane().add(panel);
+        JLabel lblSubtitulo = new JLabel("Gestiona a tus motorizados con seguridad", SwingConstants.LEFT);
+        lblSubtitulo.setFont(new Font("Montserrat", Font.PLAIN, 14));
+        lblSubtitulo.setForeground(PROSEGUR_BLACK);
+        headerPanel.add(lblSubtitulo, BorderLayout.SOUTH);
 
+        contentPanel.add(headerPanel, BorderLayout.NORTH);
 
-	        btnLogin.addActionListener(e -> {
-	            dispose(); 
-	            new MainMenu().setVisible(true); 
-	        });
-	    }
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(PROSEGUR_BLACK);
+        formPanel.setBorder(new EmptyBorder(30, 40, 30, 40));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 0, 10, 0);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.weightx = 1.0;
+
+        JLabel lblUsuario = new JLabel("⚫ Usuario");
+        lblUsuario.setFont(new Font("Montserrat", Font.BOLD, 14));
+        lblUsuario.setForeground(PROSEGUR_YELLOW);
+        formPanel.add(lblUsuario, gbc);
+
+        gbc.gridy = 1;
+        txtUsuario = new JTextField();
+        stylizeTextField(txtUsuario);
+        formPanel.add(txtUsuario, gbc);
+
+        gbc.gridy = 2;
+        JLabel lblContrasena = new JLabel("⚫ Contraseña");
+        lblContrasena.setFont(new Font("Montserrat", Font.BOLD, 14));
+        lblContrasena.setForeground(PROSEGUR_YELLOW);
+        formPanel.add(lblContrasena, gbc);
+
+        gbc.gridy = 3;
+        txtPassword = new JPasswordField();
+        stylizeTextField(txtPassword);
+        formPanel.add(txtPassword, gbc);
+
+        gbc.gridy = 4;
+        gbc.insets = new Insets(20, 0, 0, 0);
+        btnLogin = new JButton("Acceder al panel ⚫");
+        stylizePrimaryButton(btnLogin);
+        formPanel.add(btnLogin, gbc);
+
+        contentPanel.add(formPanel, BorderLayout.CENTER);
+
+        JLabel footer = new JLabel("⚫ Credenciales: admin / admin", SwingConstants.CENTER);
+        footer.setBorder(new EmptyBorder(10, 0, 15, 0));
+        footer.setForeground(PROSEGUR_YELLOW);
+        footer.setFont(new Font("Montserrat", Font.PLAIN, 12));
+        contentPanel.add(footer, BorderLayout.SOUTH);
+
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                String usuario = txtUsuario.getText() != null ? txtUsuario.getText().trim() : "";
+                char[] passwordChars = txtPassword.getPassword();
+                String contrasena = passwordChars != null ? new String(passwordChars).trim() : "";
+
+                if ("admin".equals(usuario) && "admin".equals(contrasena)) {
+                    dispose();
+                    new MainMenu().setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(LoginGUI.this,
+                            "Usuario o contraseña incorrectos",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    txtPassword.setText("");
+                    txtUsuario.requestFocusInWindow();
+                }
+            }
+        });
+    }
+
+    private void stylizeTextField(JTextField field) {
+        field.setFont(new Font("Montserrat", Font.PLAIN, 14));
+        field.setForeground(PROSEGUR_BLACK);
+        field.setBackground(Color.WHITE);
+        field.setBorder(new CompoundBorder(new LineBorder(PROSEGUR_YELLOW, 2, true),
+                new EmptyBorder(8, 10, 8, 10)));
+    }
+
+    private void stylizePrimaryButton(JButton button) {
+        button.setFont(new Font("Montserrat", Font.BOLD, 16));
+        button.setForeground(PROSEGUR_BLACK);
+        button.setBackground(PROSEGUR_YELLOW);
+        button.setFocusPainted(false);
+        button.setBorder(new EmptyBorder(12, 20, 12, 20));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setOpaque(true);
+    }
 }
-

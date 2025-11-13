@@ -7,6 +7,10 @@
     <fullyQualifiedTypeName name="Controlador.CartasInsuficientes"/>
     <fullyQualifiedTypeName name="java.util.List"/>
     <fullyQualifiedTypeName name="java.util.ArrayList"/>
-    <fullyQualifiedTypeName name="Modelado.Entrega"/>
     <fullyQualifiedTypeName name="GUI.Entrega"/>
+    <fullyQualifiedTypeName name="Modelado.Entrega"/>
+    <fullyQualifiedTypeName name="javax.swing.JFrame"/>
+    <fullyQualifiedTypeName name="GUI.HistorialEntregaFrame"/>
+    <fullyQualifiedTypeName name="Modelado.HistorialEntrega"/>
+    <fullyQualifiedTypeName name="GUI.Autoresgui"/>
 </qualifiedTypeNameHistroy>

@@ -11,6 +11,7 @@ import Modelado.Entrega;
 import Modelado.DetalleEntrega;
 import Controlador.CartasInsuficientes;
 import Controlador.MotorizadoNoEncontrado;
+import Modelado.HistorialEntrega;
 
 public class ControladorMotorizado {
 	
@@ -164,6 +165,73 @@ public class ControladorMotorizado {
 		    // actualizar motorizado: restar solo las aceptadas
 		    m.setTarjetasAsignadas(disponibles - aceptadas);
 		} 
-	 
+	 public List<HistorialEntrega> obtenerHistorialEntregas() {
+         List<HistorialEntrega> historial = new ArrayList<>();
+         List<Entrega> entregas = InMemoryDatabase.getEntregas();
+
+         for (Entrega entrega : entregas) {
+             if (entrega == null) {
+                 continue;
+             }
+
+             Motorizado motorizado = InMemoryDatabase.findByDniObj(entrega.getDniMotorizado());
+             String nombreCompleto = buildNombreCompleto(motorizado);
+             String fecha = safe(entrega.getFecha());
+             String dniMotorizado = safe(entrega.getDniMotorizado());
+
+             boolean seAgregoDetalle = false;
+             List<DetalleEntrega> detalles = entrega.getDetalles();
+             if (detalles != null) {
+                 for (DetalleEntrega detalle : detalles) {
+                     if (detalle == null) {
+                         continue;
+                     }
+                     historial.add(crearEntradaHistorial(fecha, nombreCompleto, dniMotorizado, detalle));
+                     seAgregoDetalle = true;
+                 }
+             }
+
+             if (!seAgregoDetalle) {
+                 historial.add(crearEntradaHistorial(fecha, nombreCompleto, dniMotorizado, null));
+             }
+         }
+
+         return historial;
+     }
+
+     private HistorialEntrega crearEntradaHistorial(String fecha,
+                                                    String nombreCompleto,
+                                                    String dniMotorizado,
+                                                    DetalleEntrega detalle) {
+         String cliente = detalle != null ? safe(detalle.getCliente()) : "Sin cliente registrado";
+         String direccion = detalle != null ? safe(detalle.getDireccion()) : "Sin dirección registrada";
+         String banco = detalle != null ? safe(detalle.getBanco()) : "Sin banco registrado";
+         boolean conforme = detalle != null && detalle.isConforme();
+
+         return new HistorialEntrega(
+                 fecha,
+                 cliente,
+                 direccion,
+                 banco,
+                 nombreCompleto,
+                 dniMotorizado,
+                 conforme
+         );
+     }
+
+     private String buildNombreCompleto(Motorizado motorizado) {
+         if (motorizado == null) {
+             return "";
+         }
+         String nombres = safe(motorizado.getNombres());
+         String apellidos = safe(motorizado.getApellidos());
+         String nombreCompleto = (nombres + " " + apellidos).trim();
+         return nombreCompleto;
+     }
+
+     private String safe(String value) {
+         return value == null ? "" : value.trim();
+     }
+
 }
 

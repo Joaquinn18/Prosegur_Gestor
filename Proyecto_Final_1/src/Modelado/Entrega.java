@@ -9,6 +9,7 @@ public class Entrega {
 	    private int requestedCantidad; 
 	    private String fecha;
 	    private List<DetalleEntrega> detalles; 
+	  
 
 	   
 	    public Entrega(int id, String dniMotorizado, int cantidad, int requestedCantidad, String fecha, List<DetalleEntrega> detalles) {
@@ -52,4 +53,5 @@ public class Entrega {
 	        }
 	       return s;
 	    }
+	   
 }
